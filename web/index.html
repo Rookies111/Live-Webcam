@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Live Webcam Stream</title>
+</head>
+<body>
+    <h1>Live Webcam Stream</h1>
+    <img id="video" src="" alt="Live Stream">
+    <p id="debug">debug</p>
+    <button onclick="StartRecord()">Start Record</button>
+    <button onclick="StopRecord()">Stop Record</button>
+    <button onclick="End()">End</button>
+    
+    <script>
+        let frame_count = 0
+        let start_time = Date.now()
+        const debug = document.getElementById("debug")
+        const socket = new WebSocket('ws://rookies111-pi.mshome.net:4003');
+        socket._host = "test"
+        socket.addEventListener("open", () => {debug.innerHTML = "We are connected"})
+        const img = document.getElementById('video');
+
+        socket.onmessage = function(event) {
+            frame_count++;
+            img.src = 'data:image/jpeg;base64,' + event.data;
+            console.log({start: start_time, now: Date.now(), delta: Date.now() - start_time})
+            debug.innerHTML = `FPS: ${frame_count*1000/(Date.now() - start_time)}`
+        };
+
+        function StartRecord() {
+            socket.send(JSON.stringify({msg:"start", type:"cmd"}))
+        }
+
+        function StopRecord() {
+            socket.send(JSON.stringify({msg:"stop", type:"cmd"}))
+        }
+
+        function End() {
+            socket.send(JSON.stringify({msg:"end", type:"cmd"}))
+        }
+    </script>
+</body>
+</html>
