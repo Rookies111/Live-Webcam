@@ -1,10 +1,10 @@
-const socket = new WebSocket('ws://192.168.137.73:4003');
-const img = document.getElementById('video');
-const debug = document.getElementById("debug")
 let frame_count = 0
 let start_time = Date.now()
-
+const debug = document.getElementById("debug")
+const socket = new WebSocket('ws://localhost:4003');
+socket._host = "test"
 socket.addEventListener("open", () => {debug.innerHTML = "We are connected"})
+const img = document.getElementById('video');
 
 socket.onmessage = function(event) {
     frame_count++;
@@ -14,13 +14,13 @@ socket.onmessage = function(event) {
 };
 
 function StartRecord() {
-    socket.send({"cmd":"start"})
+    socket.send(JSON.stringify({msg:"start", type:"cmd"}))
 }
 
 function StopRecord() {
-    socket.send({"cmd":"stop"})
+    socket.send(JSON.stringify({msg:"stop", type:"cmd"}))
 }
 
 function End() {
-    socket.send({"cmd":"end"})
+    socket.send(JSON.stringify({msg:"end", type:"cmd"}))
 }
