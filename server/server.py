@@ -51,6 +51,7 @@ def render_video():
     video.release()
     image_count = 1
     print("Finished")
+    return 0
 
 def capture_and_stream():
     global record, active, image_count
@@ -88,10 +89,11 @@ def capture_and_stream():
             cv2.imwrite(f"../Output/{str(image_count).zfill(5)}.jpeg",frame)
             image_count += 1
         elif not record and image_count > 1:
-            render_video()
             print("Rendering video...")
+            threading.Thread(target=render_video).start()
 
     cap.release()
+    return 0
 
 def recv_msg():
     global record, active
@@ -105,6 +107,7 @@ def recv_msg():
             record = False
         elif msg == "end":
             active = False
+    return 0
 
 if __name__ == "__main__":
     record = False
