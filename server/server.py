@@ -1,6 +1,7 @@
 from datetime import datetime
 from websockets.sync.client import connect
 import threading
+import time
 import os
 import cv2
 import base64
@@ -80,7 +81,7 @@ def capture_and_stream():
         cv2.putText(frame, str(datetime.now()), org, font,
                 fontScale, color, thickness, cv2.LINE_AA)
         # Convert the frame to JPEG format
-        _, buffer = cv2.imencode('.jpeg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
+        _, buffer = cv2.imencode('.jpeg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
         # Encode the frame as base64 string
         frame_encoded = base64.b64encode(buffer).decode('utf-8')
         # Send the frame to the client
@@ -113,5 +114,10 @@ if __name__ == "__main__":
     record = False
     active = True
     websocket = connect('ws://localhost:4003/')
+    websocket.send('{"msg": "camara", "device_type": "camara", "type": "req"}')
+    while not websocket.recv() == "ack":
+        print("Waiting for ack...")
+        time.sleep(500)
+    print("received ack. Start streaming...")
     threading.Thread(target=capture_and_stream).start()
     threading.Thread(target=recv_msg).start()
