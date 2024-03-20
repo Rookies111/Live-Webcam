@@ -2,8 +2,30 @@ let frame_count = 0
 let start_time = Date.now()
 const debug = document.getElementById("debug")
 const socket = new WebSocket('ws://localhost:4003');
-socket._host = "test"
-socket.addEventListener("open", () => {debug.innerHTML = "We are connected"})
+socket.addEventListener("open", () => {
+    connected = false
+    socket.send(JSON.stringify({msg:"viewer{i}", device_type:"viewer", type:"req"}))
+    while (!connected) {
+        delay(1000)
+        console.log('waiting for server')
+        socket.onmessage = function(event) {
+            console.log(event.data)
+            // if (event.data == 'viewer{i} has connected') {
+            //     console.log('server connected')
+            //     connected = true
+            // }
+        }
+    }
+    function waitOneSecond(ms) {
+        return new Promise(resolve => {
+          setTimeout(resolve, ms);
+        });
+    }
+
+    async function delay(ms) {
+        await waitOneSecond(ms);
+    }
+})
 const img = document.getElementById('video');
 
 socket.onmessage = function(event) {

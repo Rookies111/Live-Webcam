@@ -33,13 +33,10 @@ sockserver.on('connection', ws => {
           client.send(`${data.msg}`)
         }
       } else if (data.type == 'req') {
-        console.log(`${data.msg}`)
-        if (data.device_type == 'camara') {
-          ws.name = data.msg
-        } else {
-          ws.name = data.msg
-        }
-        ws.send(JSON.stringify({msg:"ack", type:"ack"}))
+        console.log(`msg: ${data.msg}, device_type: ${data.device_type}`)
+        ws.name = data.msg
+        ws.type = data.device_type
+        client.send(JSON.stringify({msg: `${data.msg} has connected`, type: "ack"}))
       } else if (client.id != user[0]) {
         client.send(`${data.msg}`)
       }

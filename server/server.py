@@ -1,10 +1,11 @@
-from datetime import datetime
-from websockets.sync.client import connect
-import threading
-import time
+# Import the necessary libraries
 import os
+import threading
+import json
 import cv2
 import base64
+from datetime import datetime
+from websockets.sync.client import connect
 
 def list_ports():
     """
@@ -114,10 +115,9 @@ if __name__ == "__main__":
     record = False
     active = True
     websocket = connect('ws://localhost:4003/')
-    websocket.send('{"msg": "camara", "device_type": "camara", "type": "req"}')
-    while not websocket.recv() == "ack":
+    websocket.send('{"msg": "camara1", "device_type": "camara", "type": "req"}')
+    while not json.loads(websocket.recv())["type"] == "ack":
         print("Waiting for ack...")
-        time.sleep(500)
     print("received ack. Start streaming...")
-    threading.Thread(target=capture_and_stream).start()
-    threading.Thread(target=recv_msg).start()
+    # threading.Thread(target=capture_and_stream).start()
+    # threading.Thread(target=recv_msg).start()
