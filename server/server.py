@@ -73,7 +73,7 @@ def capture_and_stream(websocket: ws.ClientConnection):
     # Line thickness of 2 px 
     thickness = 2
 
-    while cap.isOpened() and active:
+    while cap.isOpened() and state["is_active"]:
         ret, frame = cap.read()
         if not ret:
             break
@@ -84,7 +84,7 @@ def capture_and_stream(websocket: ws.ClientConnection):
         # Encode the frame as base64 string
         frame_encoded = base64.b64encode(buffer).decode('utf-8')
         # Send the frame to the client
-        websocket.send('{"msg":"' + frame_encoded + '", "type":"image"}')
+        websocket.send('{"header": {"msg_type": "res", "device_type": "camara", "name": "camara1"}, "data": "%s"}' %(frame_encoded))
         if state["is_record"]:
             cv2.imwrite(f"../Output/{str(image_count).zfill(5)}.jpeg",frame)
             image_count += 1
@@ -128,11 +128,11 @@ def main():
     print(res["data"], "Start streaming...")
 
     # Start streaming
-    # try:
-    #     threading.Thread(target=capture_and_stream, args=(websocket)).start()
-    #     threading.Thread(target=recv_msg).start()
-    # except:
-    #     pass
+    try:
+        threading.Thread(target=capture_and_stream, args=[websocket]).start()
+        # threading.Thread(target=recv_msg).start()
+    except:
+        pass
 
 # Run the main function
 if __name__ == "__main__":
