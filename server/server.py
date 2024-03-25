@@ -5,7 +5,7 @@ import json
 import cv2
 import base64
 from datetime import datetime
-from websockets.sync.client import connect
+import websockets.sync.client as ws
 
 def list_ports():
     """
@@ -37,7 +37,6 @@ def list_ports():
     return available_ports,working_ports,non_working_ports
 
 def render_video():
-    global image_count
     images = [img for img in os.listdir("../Output") if img.endswith(".jpeg")]
     images.sort()
     frame = cv2.imread(os.path.join("../Output", images[0]))
@@ -51,12 +50,11 @@ def render_video():
 
     cv2.destroyAllWindows()
     video.release()
-    image_count = 1
     print("Finished")
     return 0
 
-def capture_and_stream():
-    global record, active, image_count
+def capture_and_stream(websocket: ws.ClientConnection):
+    global state, image_count
     available, working, not_working = list_ports()
     # print(available, working, not_working)
     image_count = 1
@@ -87,17 +85,18 @@ def capture_and_stream():
         frame_encoded = base64.b64encode(buffer).decode('utf-8')
         # Send the frame to the client
         websocket.send('{"msg":"' + frame_encoded + '", "type":"image"}')
-        if record:
+        if state["is_record"]:
             cv2.imwrite(f"../Output/{str(image_count).zfill(5)}.jpeg",frame)
             image_count += 1
-        elif not record and image_count > 1:
+        elif not state["is_record"] and image_count > 1:
             print("Rendering video...")
             threading.Thread(target=render_video).start()
+            image_count = 1
 
     cap.release()
     return 0
 
-def recv_msg():
+def recv_msg(websocket: ws.ClientConnection):
     global record, active
     while active:
         msg = websocket.recv()
@@ -111,13 +110,30 @@ def recv_msg():
             active = False
     return 0
 
-if __name__ == "__main__":
-    record = False
-    active = True
-    websocket = connect('ws://localhost:4003/')
-    websocket.send('{"msg": "camara1", "device_type": "camara", "type": "req"}')
-    while not json.loads(websocket.recv())["type"] == "ack":
+# Main function
+def main():
+    global state
+    # Initialize the variables
+    state = {"is_record": False, "is_active": True}
+
+    # Connect to the server and request ack message from the server
+    websocket = ws.connect('ws://localhost:4003/')
+    websocket.send('{"header": {"msg_type": "req", "device_type": "camara", "name": "camara1"}, "data": ""}')
+
+    # Wait for ack message from the server
+    res = json.loads(websocket.recv())
+    while not res["header"]["msg_type"] == "ack":
+        res = json.loads(websocket.recv())
         print("Waiting for ack...")
-    print("received ack. Start streaming...")
-    # threading.Thread(target=capture_and_stream).start()
-    # threading.Thread(target=recv_msg).start()
+    print(res["data"], "Start streaming...")
+
+    # Start streaming
+    # try:
+    #     threading.Thread(target=capture_and_stream, args=(websocket)).start()
+    #     threading.Thread(target=recv_msg).start()
+    # except:
+    #     pass
+
+# Run the main function
+if __name__ == "__main__":
+    main()

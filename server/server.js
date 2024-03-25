@@ -14,31 +14,39 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
+// Message structure
+// {header: {msg_type: "msg_type", device_type: "device_type", name: "device_name"}, data: "data"}
+// msg_type:
+// - req: request to connect
+// - res: response to request
+// - ack: acknowledge connection
+// - cmd: command
+// device_type:
+// - viewer: viewer device
+// - camera: camera device
+// - server: server device
+// name: device name
+// data: data
+
 // Received data from outside
-uuid = 0
-user = []
 const sockserver = new WebSocket.Server({ port: 4003 })
 sockserver.on('connection', ws => {
-  ws.id = uuid
-  user.push(ws.id)
-  uuid++
-  console.log(`New client uuid ${ws.id} has connected to port 4003!`)
-  ws.on('close', () => console.log(`Client uuid ${ws.id} has disconnected from port 4003!`))
+  ws.on('close', () => console.log(`${ws.name} has disconnected from port 4003!`))
   ws.on('message', data => {
-    // console.log(JSON.parse(data.toString()))
-    data = JSON.parse(data.toString())
+    const res = JSON.parse(data.toString())
+    const header = res.header
     sockserver.clients.forEach(client => {
-      if (data.type == 'cmd') {
-        if (client.id == user[0]) {
-          client.send(`${data.msg}`)
+      if (header.msg_type == 'cmd') {
+        if (client.device_type == "camara") {
+          client.send(JSON.stringify({header: {msg_type: "cmd", device_type: "server", name: "server"}, data: res.data}))
         }
-      } else if (data.type == 'req') {
-        console.log(`msg: ${data.msg}, device_type: ${data.device_type}`)
-        ws.name = data.msg
-        ws.type = data.device_type
-        client.send(JSON.stringify({msg: `${data.msg} has connected`, type: "ack"}))
-      } else if (client.id != user[0]) {
-        client.send(`${data.msg}`)
+      } else if (header.msg_type == 'req') {
+        ws.name = header.name
+        ws.type = header.device_type
+        // console.log(`${ws.name} has connected to port 4003!`)
+        client.send(JSON.stringify({header: {msg_type: "ack", device_type: "server", name: "server"}, data: `${ws.name} has connected to port 4003!`}))
+      } else {
+        client.send(JSON.stringify({header: {msg_type: "res", device_type: "server", name: "server"}, data: res.data}))
       }
     })
   })
