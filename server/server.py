@@ -125,7 +125,7 @@ def main():
     while not res["header"]["msg_type"] == "ack":
         res = json.loads(websocket.recv())
         print("Waiting for ack...")
-    print(res["data"], "Start streaming...")
+    print(res["data"], "has connected to port 4003!", "Start streaming...")
 
     # Start streaming
     try:

@@ -37,20 +37,43 @@ sockserver.on('connection', ws => {
     const res = JSON.parse(data.toString())
     const header = res.header
     sockserver.clients.forEach(client => {
-      if (header.msg_type == 'req' && !client_list.includes(header.name)) {
-        client_list.push(header.name)
-        ws.name = header.name
-        ws.device_type = header.device_type
-        console.log(`${ws.name} has connected to port 4003!`)
-        if (client.name == ws.name) {
-          client.send(JSON.stringify({header: {msg_type: "ack", device_type: "server", name: "server"}, data: `${ws.name} has connected to port 4003!`}))
-        }
+      switch (header.msg_type) {
+        case 'req':
+          if (res.data == 'ack' && !client_list.includes(header.name)) {
+            console.log(client_list)
+            client_list.push(header.name)
+            ws.name = header.name
+            ws.device_type = header.device_type
+            console.log(`${ws.name} has connected to port 4003!`)
+            client.send(`{"header": {"msg_type": "ack", "device_type": "server", "name": "server"}, "data": "${ws.name}"}`)
+          } else if (res.data == 'dis' && client_list.includes(header.name)) {
+            console.log(client_list)
+            client_list = client_list.filter(client => client != header.name)
+            console.log(client_list)
+            console.log(`${ws.name} has disconnected from port 4003!`)
+          }
+          break
+
+        case 'cmd':
+          if (client.device_type == "camara") {
+            client.send(`{"header": {"msg_type": "cmd", "device_type": "server", "name": "server"}, "data": ${res.data}}`)
+          }
+          break
+
+        case 'res':
+          client.send(`{"header": {"msg_type": "res", "device_type": "server", "name": "server"}, "data": ${res.data}}`)
+          break
+
+        default:
+          console.log(`default ${res}`)
+          break
+      }
+      if (header.msg_type == 'req' && res.data == "ack") {
+        
       } else if (header.msg_type == 'cmd') {
-        if (client.device_type == "camara") {
-          client.send(JSON.stringify({header: {msg_type: "cmd", device_type: "server", name: "server"}, data: res.data}))
-        }
+        
       } else {
-        client.send(JSON.stringify({header: {msg_type: "res", device_type: "server", name: "server"}, data: res.data}))
+        
       }
     })
   })
