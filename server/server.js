@@ -29,6 +29,7 @@ app.listen(port, () => {
 // data: data
 
 // Received data from outside
+client_list = []
 const sockserver = new WebSocket.Server({ port: 4003 })
 sockserver.on('connection', ws => {
   ws.on('close', () => console.log(`${ws.name} has disconnected from port 4003!`))
@@ -36,15 +37,18 @@ sockserver.on('connection', ws => {
     const res = JSON.parse(data.toString())
     const header = res.header
     sockserver.clients.forEach(client => {
-      if (header.msg_type == 'cmd') {
+      if (header.msg_type == 'req' && !client_list.includes(header.name)) {
+        client_list.push(header.name)
+        ws.name = header.name
+        ws.device_type = header.device_type
+        console.log(`${ws.name} has connected to port 4003!`)
+        if (client.name == ws.name) {
+          client.send(JSON.stringify({header: {msg_type: "ack", device_type: "server", name: "server"}, data: `${ws.name} has connected to port 4003!`}))
+        }
+      } else if (header.msg_type == 'cmd') {
         if (client.device_type == "camara") {
           client.send(JSON.stringify({header: {msg_type: "cmd", device_type: "server", name: "server"}, data: res.data}))
         }
-      } else if (header.msg_type == 'req') {
-        ws.name = header.name
-        ws.type = header.device_type
-        // console.log(`${ws.name} has connected to port 4003!`)
-        client.send(JSON.stringify({header: {msg_type: "ack", device_type: "server", name: "server"}, data: `${ws.name} has connected to port 4003!`}))
       } else {
         client.send(JSON.stringify({header: {msg_type: "res", device_type: "server", name: "server"}, data: res.data}))
       }
