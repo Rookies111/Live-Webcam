@@ -118,7 +118,7 @@ def main():
 
     # Connect to the server and request ack message from the server
     websocket = ws.connect('ws://localhost:4003/')
-    websocket.send('{"header": {"msg_type": "req", "device_type": "camara", "name": "camara1"}, "data": ""}')
+    websocket.send('{"header": {"msg_type": "req", "device_type": "camara", "name": "camara1"}, "data": "ack"}')
 
     # Wait for ack message from the server
     res = json.loads(websocket.recv())
@@ -129,7 +129,8 @@ def main():
 
     # Start streaming
     try:
-        threading.Thread(target=capture_and_stream, args=[websocket]).start()
+        pass
+        # threading.Thread(target=capture_and_stream, args=[websocket]).start()
         # threading.Thread(target=recv_msg).start()
     except:
         pass

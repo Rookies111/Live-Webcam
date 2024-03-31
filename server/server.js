@@ -32,9 +32,13 @@ app.listen(port, () => {
 client_list = []
 const sockserver = new WebSocket.Server({ port: 4003 })
 sockserver.on('connection', ws => {
-  ws.on('close', () => console.log(`${ws.name} has disconnected from port 4003!`))
+  ws.on('close', (data) => {
+    console.log(data)
+    console.log(`${client.name} has disconnected from port 4003!`)
+  })
   ws.on('message', data => {
     const res = JSON.parse(data.toString())
+    // console.log(res)
     const header = res.header
     const req = {
       header: {
@@ -55,10 +59,9 @@ sockserver.on('connection', ws => {
             req.data = header.name
             console.log(`${client.name} has connected to port 4003!`)
           } else if (res.data == 'dis' && client_list.includes(header.name)) {
-            console.log(`before: ${client_list}`)
             client_list = client_list.filter(client => client != header.name)
-            console.log(`after: ${client_list}`)
-            console.log(`${client.name} has disconnected from port 4003!`)
+            client.close(`${header.name}`)
+            console.log(`${header.name} has disconnected from port 4003!`)
           }
           break
 

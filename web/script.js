@@ -2,10 +2,19 @@ let frame_count = 0
 let start_time = Date.now()
 const socket = new WebSocket('ws://localhost:4003')
 const id = Math.random().toString(36).substring(2,10+2)
+const req = {
+    header: {
+        msg_type: 'req',
+        device_type: 'viewer',
+        name: `viewer-${id}`
+    },
+    data: null
+
+}
 
 window.onunload = function () {
-    socket.send(`{"header": {"msg_type": "req", "device_type": "viewer", "name": "viewer-${id}"}, "data": "dis"}`)
-    socket.close()
+    req.data = 'dis'
+    socket.send(JSON.stringify(req))
 }
 
 socket.addEventListener("open", () => {
