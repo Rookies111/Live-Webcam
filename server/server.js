@@ -79,8 +79,8 @@ sockserver.on('connection', ws => {
           break
       }
       client.send(JSON.stringify(req))
-      console.log(client_list)
     })
+    console.log(client_list)
   })
   ws.onerror = function () {
     console.log('websocket error')
