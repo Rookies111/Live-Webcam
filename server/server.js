@@ -36,45 +36,50 @@ sockserver.on('connection', ws => {
   ws.on('message', data => {
     const res = JSON.parse(data.toString())
     const header = res.header
+    const req = {
+      header: {
+        msg_type: 'res',
+        device_type: 'server',
+        name: 'server'
+      },
+      data: null
+    }
     sockserver.clients.forEach(client => {
       switch (header.msg_type) {
         case 'req':
           if (res.data == 'ack' && !client_list.includes(header.name)) {
-            console.log(client_list)
             client_list.push(header.name)
-            ws.name = header.name
-            ws.device_type = header.device_type
-            console.log(`${ws.name} has connected to port 4003!`)
-            client.send(`{"header": {"msg_type": "ack", "device_type": "server", "name": "server"}, "data": "${ws.name}"}`)
+            client.name = header.name
+            client.device_type = header.device_type
+            req.header.msg_type = 'ack'
+            req.data = header.name
+            console.log(`${client.name} has connected to port 4003!`)
           } else if (res.data == 'dis' && client_list.includes(header.name)) {
-            console.log(client_list)
+            console.log(`before: ${client_list}`)
             client_list = client_list.filter(client => client != header.name)
-            console.log(client_list)
-            console.log(`${ws.name} has disconnected from port 4003!`)
+            console.log(`after: ${client_list}`)
+            console.log(`${client.name} has disconnected from port 4003!`)
           }
           break
 
         case 'cmd':
           if (client.device_type == "camara") {
-            client.send(`{"header": {"msg_type": "cmd", "device_type": "server", "name": "server"}, "data": ${res.data}}`)
+            req.header.msg_type = 'cmd'
+            req.data = res.data
           }
           break
 
         case 'res':
-          client.send(`{"header": {"msg_type": "res", "device_type": "server", "name": "server"}, "data": ${res.data}}`)
+          req.header.msg_type = 'res'
+          req.data = res.data
           break
 
         default:
           console.log(`default ${res}`)
           break
       }
-      if (header.msg_type == 'req' && res.data == "ack") {
-        
-      } else if (header.msg_type == 'cmd') {
-        
-      } else {
-        
-      }
+      client.send(JSON.stringify(req))
+      console.log(client_list)
     })
   })
   ws.onerror = function () {
