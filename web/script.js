@@ -14,13 +14,14 @@ const req = {
 
 window.onunload = function () {
     req.data = 'dis'
+    console.log(req)
     socket.send(JSON.stringify(req))
 }
 
 socket.addEventListener("open", () => {
-    console.log("We are connected")
+    // console.log("We are connected")
     socket.send(`{"header": {"msg_type": "req", "device_type": "viewer", "name": "viewer-${id}"}, "data": "ack"}`)
-    console.log("sent request")
+    // console.log("sent request")
 })
 
 socket.addEventListener("message", (event) => {
