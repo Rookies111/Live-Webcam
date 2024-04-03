@@ -20,7 +20,8 @@ window.onunload = function () {
 
 socket.addEventListener("open", () => {
     // console.log("We are connected")
-    socket.send(`{"header": {"msg_type": "req", "device_type": "viewer", "name": "viewer-${id}"}, "data": "ack"}`)
+    req.data = 'ack'
+    socket.send(JSON.stringify(req))
     // console.log("sent request")
 })
 

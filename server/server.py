@@ -85,15 +85,17 @@ def capture_and_stream(websocket: ws.ClientConnection):
         frame_encoded = base64.b64encode(buffer).decode('utf-8')
         # Send the frame to the client
         websocket.send('{"header": {"msg_type": "res", "device_type": "camara", "name": "camara1"}, "data": "%s"}' %(frame_encoded))
+        print("data sent")
         if state["is_record"]:
             cv2.imwrite(f"../Output/{str(image_count).zfill(5)}.jpeg",frame)
             image_count += 1
         elif not state["is_record"] and image_count > 1:
             print("Rendering video...")
-            threading.Thread(target=render_video).start()
+            threading.Thread(target=render_video, name="render").start()
             image_count = 1
 
     cap.release()
+    websocket.send('{"header": {"msg_type": "req", "device_type": "camara", "name": "camara1"}, "data": "dis"}')
     return 0
 
 def recv_msg(websocket: ws.ClientConnection):
@@ -119,19 +121,22 @@ def main():
     # Connect to the server and request ack message from the server
     websocket = ws.connect('ws://localhost:4003/')
     websocket.send('{"header": {"msg_type": "req", "device_type": "camara", "name": "camara1"}, "data": "ack"}')
+    print("ack sent")
+
+    stream = threading.Thread(target=capture_and_stream, name="stream", args=[websocket])
 
     # Wait for ack message from the server
     res = json.loads(websocket.recv())
     while not res["header"]["msg_type"] == "ack":
         res = json.loads(websocket.recv())
         print("Waiting for ack...")
-    print(res["data"], "has connected to port 4003!", "Start streaming...")
+    print(res["data"], "has connected to port 4003!. Start streaming...")
 
     # Start streaming
     try:
         pass
-        # threading.Thread(target=capture_and_stream, args=[websocket]).start()
-        # threading.Thread(target=recv_msg).start()
+        stream.start()
+        # threading.Thread(target=recv_msg, name="receiver", args=[websocket]).start()
     except:
         pass
 

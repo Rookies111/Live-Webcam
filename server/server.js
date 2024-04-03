@@ -34,11 +34,11 @@ const sockserver = new WebSocket.Server({ port: 4003 })
 sockserver.on('connection', ws => {
   ws.on('message', data => {
     const res = JSON.parse(data.toString())
-    // console.log(res)
+    console.log(`received: ${JSON.stringify(res)}`)
     const header = res.header
     const req = {
       header: {
-        msg_type: 'res',
+        msg_type: null,
         device_type: 'server',
         name: 'server'
       },
@@ -77,9 +77,10 @@ sockserver.on('connection', ws => {
           console.log(`default ${res}`)
           break
       }
+      console.log(`sent: ${JSON.stringify(req)}`)
       client.send(JSON.stringify(req))
     })
-    console.log(client_list)
+    // console.log(client_list)
   })
   ws.onerror = function () {
     console.log('websocket error')
