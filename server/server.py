@@ -112,8 +112,8 @@ def recv_msg(websocket: ws.ClientConnection):
             active = False
     return 0
 
-# Main function
-def main():
+# Setup function
+def setup():
     global state
     # Initialize the variables
     state = {"is_record": False, "is_active": True}
@@ -124,22 +124,27 @@ def main():
     print("ack sent")
 
     stream = threading.Thread(target=capture_and_stream, name="stream", args=[websocket])
+    receiver = threading.Thread(target=recv_msg, name="receiver", args=[websocket])
 
     # Wait for ack message from the server
     res = json.loads(websocket.recv())
     while not res["header"]["msg_type"] == "ack":
         res = json.loads(websocket.recv())
         print("Waiting for ack...")
-    print(res["data"], "has connected to port 4003!. Start streaming...")
+    print(res["data"], "has connected to port 4003!.")
 
+    return websocket, stream, receiver
+
+# Start function
+def start(websocket, *thread):
+    print("Start streaming...")
     # Start streaming
     try:
-        pass
         stream.start()
-        # threading.Thread(target=recv_msg, name="receiver", args=[websocket]).start()
     except:
         pass
 
 # Run the main function
 if __name__ == "__main__":
-    main()
+    websocket, stream, receiver = setup()
+    start(websocket, stream, receiver)
