@@ -7,7 +7,7 @@ import { RouterLink } from 'vue-router'
     <nav class="LayoutDefault__nav">
       <div class="column">
         <RouterLink to="/" class="logo vertical-center">
-          <img src="../assets/picture/logo.png" />Live Webcam</RouterLink>
+          <img src="../assets/logo.png" />Live Webcam</RouterLink>
       </div>
       <div class="column vertical-center" align="center">
         <RouterLink to="/">Home</RouterLink> | <RouterLink to="/gallery">Gallery</RouterLink> |

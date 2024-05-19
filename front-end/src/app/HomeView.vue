@@ -1,4 +1,4 @@
 <template>
   <p>Home View</p>
-  <img src="../assets/picture/no_signal.jpg">
+  <img src="../assets/no_signal.jpg">
 </template>
