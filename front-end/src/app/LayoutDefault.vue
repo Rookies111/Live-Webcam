@@ -1,14 +1,17 @@
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+</script>
+
 <template>
   <div class="LayoutDefault">
     <nav class="LayoutDefault__nav">
       <div class="column">
-        <router-link to="/" class="logo vertical-center">
-          <img src="../assets/picture/logo.png" />Live Webcam</router-link
-        >
+        <RouterLink to="/" class="logo vertical-center">
+          <img src="../assets/picture/logo.png" />Live Webcam</RouterLink>
       </div>
       <div class="column vertical-center" align="center">
-        <router-link to="/">Home</router-link> | <router-link to="/gallery">Gallery</router-link> |
-        <router-link to="/about">About</router-link>
+        <RouterLink to="/">Home</RouterLink> | <RouterLink to="/gallery">Gallery</RouterLink> |
+        <RouterLink to="/about">About</RouterLink>
       </div>
     </nav>
     <main class="LayoutDefault__main">
@@ -23,16 +26,22 @@ nav {
   height: 3.5rem;
   padding: 0.25rem;
   background-color: #fff;
-  color: black;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   content: '';
   display: table;
   clear: both;
-  font-weight: bold;
 }
 
-nav router-link {
+nav a {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
   margin: 0 0.5rem;
+}
+
+.logo {
+  float: left;
+  font-size: 1.4rem;
 }
 
 .logo img {
@@ -52,10 +61,5 @@ nav router-link {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.logo {
-  float: left;
-  font-size: 1.4rem;
 }
 </style>
