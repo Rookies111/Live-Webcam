@@ -7,7 +7,8 @@ import { RouterLink } from 'vue-router'
     <nav class="LayoutDefault__nav">
       <div class="column">
         <RouterLink to="/" class="logo vertical-center">
-          <img src="../assets/logo.png" />Live Webcam</RouterLink>
+          <img src="../assets/logo.png" />Live Webcam</RouterLink
+        >
       </div>
       <div class="column vertical-center" align="center">
         <RouterLink to="/">Home</RouterLink> | <RouterLink to="/gallery">Gallery</RouterLink> |
@@ -26,10 +27,12 @@ nav {
   height: 3.5rem;
   padding: 0.25rem;
   background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.5);
   content: '';
   display: table;
   clear: both;
+  position: sticky;
+  top: 0;
 }
 
 nav a {
