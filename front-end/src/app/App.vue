@@ -1,11 +1,10 @@
 <script setup>
-import LayoutDefault from './layouts/LayoutDefault.vue'
+import LayoutDefault from './LayoutDefault.vue'
 </script>
 
 <template>
   <layout-default>
-    <img src="./assets/picture/no_signal.jpg">
-    
+    <router-view />
   </layout-default>
   <!-- <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />

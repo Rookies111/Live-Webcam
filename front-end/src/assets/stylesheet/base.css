@@ -2,7 +2,7 @@ body {
   margin: 0px;
   min-height: 100vh;
   color: black;
-  background: #D6D6D6;
+  background: #d6d6d6;
   transition:
     color 0.5s,
     background-color 0.5s;
