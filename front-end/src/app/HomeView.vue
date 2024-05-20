@@ -1,7 +1,11 @@
-<script>
+<script setup>
 import { ref } from 'vue'
 
 const mode = ref('video')
+
+function changeMode(newMode) {
+  console.log(newMode)
+  mode.value = newMode
 }
 </script>
 
@@ -10,8 +14,8 @@ const mode = ref('video')
   <img src="../assets/icons/Record Button.svg" class="button" />
   <img src="../assets/icons/Setting Button.svg" class="button" />
   <div id="mode_selector">
-    <div class="select" @click="mode='video'">Video</div>
-    <div @click="mode='photo'">Photo</div>
+    <div class="select" @click="changeMode('video')">Video</div>
+    <div @click="changeMode('photo')">Photo</div>
   </div>
 </template>
 
@@ -29,7 +33,7 @@ const mode = ref('video')
 #mode_selector {
   display: table;
   background-color: #000;
-  color: #FFF;
+  color: #fff;
   padding: 0.75rem;
   border-radius: 15px;
   float: right;
@@ -45,7 +49,11 @@ const mode = ref('video')
 }
 
 .select {
-  background-color: #FFF;
+  background-color: #fff;
   color: #000;
+}
+
+.active {
+  display: block;
 }
 </style>
