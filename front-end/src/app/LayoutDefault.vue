@@ -33,6 +33,7 @@ nav {
   clear: both;
   position: sticky;
   top: 0;
+  z-index: 1;
 }
 
 nav a {
