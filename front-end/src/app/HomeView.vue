@@ -2,17 +2,23 @@
 import { ref } from 'vue'
 
 const mode = ref('video')
+const record_btn = ref('../assets/icons/Record Button.svg')
+const capture_btn = ref('../assets/icons/Snapshot Button.svg')
 
 function changeMode(newMode) {
-  console.log(newMode)
   document.getElementById(mode.value).classList.remove('select')
   mode.value = newMode
   document.getElementById(mode.value).classList.add('select')
+  if (mode.value === 'video') {
+    console.log(document.querySelector('.record').src)
+    document.querySelector('.record').src = record_btn.value
+  } else {
+    document.querySelector('.record').src = capture_btn.value
+  }
 }
 
 function toggleSettingPanel() {
   const settingPanel = document.querySelector('.setting_panel')
-  console.log(settingPanel.style.width)
   if (settingPanel.style.width === '0px') {
     settingPanel.style.width = '45vw'
   } else {

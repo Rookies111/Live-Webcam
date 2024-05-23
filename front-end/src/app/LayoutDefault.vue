@@ -25,7 +25,7 @@ import { RouterLink } from 'vue-router'
 nav {
   width: 100%;
   height: 3.5rem;
-  padding: 0.25rem;
+  padding: 0.25rem 0;
   background-color: #fff;
   box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.5);
   content: '';
