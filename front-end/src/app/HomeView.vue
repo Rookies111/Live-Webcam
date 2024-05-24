@@ -25,6 +25,18 @@ function toggleSettingPanel() {
     settingPanel.style.width = '0px'
   }
 }
+
+const socket = new WebSocket('ws://0.0.0.0:4003')
+
+socket.onopen = () => {
+  console.log('Connected to the server')
+  socket.send('Hello from the client!')
+}
+
+socket.onmessage = (event) => {
+  console.log('Message from the server:', event.data)
+}
+
 </script>
 
 <template>

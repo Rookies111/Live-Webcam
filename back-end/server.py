@@ -1,19 +1,33 @@
 # Import the necessary libraries
 import json
-import websockets.sync.client as ws
+import asyncio
+import websockets
+CLIENTS = set()
+
+async def handler(websocket):
+    CLIENTS.add(websocket)
+    try:
+        async for _ in websocket:
+            pass
+    finally:
+        CLIENTS.remove(websocket)
+
+async def broadcast(message):
+    for websocket in CLIENTS.copy():
+        try:
+            await websocket.send(message)
+        except websockets.ConnectionClosed:
+            pass
+
+async def broadcast_messages():
+    while True:
+        await asyncio.sleep(1)
+        message = "hi"  # your application logic goes here
+        await broadcast(message)
 
 async def main():
-    # Connect to the server and request ack message from the server
-    websocket = ws.connect('ws://localhost:4003/')
-    websocket.send('{"header": {"msg_type": "req", "device_type": "camara", "name": "camara1"}, "data": "ack"}')
-    print("ack sent")
-
-    # Wait for ack message from the server
-    res = await json.loads(websocket.recv())
-    while not res["header"]["msg_type"] == "ack":
-        res = json.loads(websocket.recv())
-        print("Waiting for ack...")
-    print(res["data"], "has connected to port 4003!.")
+    async with websockets.serve(handler, "0.0.0.0", 4003):
+        await broadcast_messages()  # run forever
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
