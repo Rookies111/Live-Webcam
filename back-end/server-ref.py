@@ -11,8 +11,8 @@ def list_ports():
     """
     Test the ports and returns a tuple with the available ports and the ones that are working.
     """
-    non_working_ports = []
     dev_port = 0
+    non_working_ports = []
     working_ports = []
     available_ports = []
     while len(non_working_ports) < 6: # if there are more than 5 non working ports stop the testing. 
