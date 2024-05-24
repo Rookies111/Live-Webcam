@@ -36,7 +36,6 @@ socket.onopen = () => {
 socket.onmessage = (event) => {
   console.log('Message from the server:', event.data)
 }
-
 </script>
 
 <template>
