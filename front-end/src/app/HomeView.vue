@@ -34,7 +34,9 @@ socket.onopen = () => {
 }
 
 socket.onmessage = (event) => {
-  console.log('Message from the server:', event.data)
+  // console.log('Message from the server:', event.data)
+  screen = document.querySelector('.screen')
+  screen.src = `data:image/jpeg;base64,${event.data}`
 }
 </script>
 

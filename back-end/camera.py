@@ -1,14 +1,19 @@
 # Import the necessary libraries
 import os
+import time
 import threading
 import cv2
 import base64
 from datetime import datetime
 
-class camara():
+class camera:
+    """
+    Class that handles the camera stream and recording.
+    """
     def __init__(self):
         available, working, not_working = self._list_ports()
         self.cap = cv2.VideoCapture(working[0])
+        self.frame_encoded = 'hello everyone!'
         self.dimension = (720, 1080)
         self.image_count = 1
         self.state = {
@@ -75,6 +80,7 @@ class camara():
         thickness = 2
         
         while self.cap.isOpened() and self.state["is_active"]:
+            time.sleep(0.03)
             ret, frame = self.cap.read()
             if not ret:
                 break
@@ -83,7 +89,7 @@ class camara():
             # Convert the frame to JPEG format
             _, buffer = cv2.imencode('.jpeg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
             # Encode the frame as base64 string
-            frame_encoded = base64.b64encode(buffer).decode('utf-8')
+            self.frame_encoded = base64.b64encode(buffer).decode('utf-8')
             # Send the frame to the client
             # websocket.send('{"header": {"msg_type": "res", "device_type": "camara", "name": "camara1"}, "data": "%s"}' %(frame_encoded))
             print("data sent")
@@ -97,6 +103,10 @@ class camara():
 
         self.cap.release()
         # websocket.send('{"header": {"msg_type": "req", "device_type": "camara", "name": "camara1"}, "data": "dis"}')
+        return 0
+    
+    def start_stream(self):
+        threading.Thread(target=self.stream, name="stream").start()
         return 0
     
     def start_record(self):
