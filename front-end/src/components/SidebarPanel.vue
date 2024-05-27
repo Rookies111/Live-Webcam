@@ -6,6 +6,7 @@ export default {
   components: {
     CloseButton
   },
+
   props: {
     title: {
       type: String,
