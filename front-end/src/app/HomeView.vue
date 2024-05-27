@@ -1,60 +1,57 @@
 <script setup>
 import { ref } from 'vue'
+import RecordButton from '@/assets/icons/Record Button.vue'
+import SettingButton from '@/assets/icons/Setting Button.vue'
+import CaptureButton from '@/assets/icons/Snapshot Button.vue'
+import CloseButton from '@/assets/icons/Close Button.vue'
+import SidebarPanel from '@/components/SidebarPanel.vue'
 
 const mode = ref('video')
-const record_btn = ref('../assets/icons/Record Button.svg')
-const capture_btn = ref('../assets/icons/Snapshot Button.svg')
 
 function changeMode(newMode) {
   document.getElementById(mode.value).classList.remove('select')
   mode.value = newMode
   document.getElementById(mode.value).classList.add('select')
-  if (mode.value === 'video') {
-    console.log(document.querySelector('.record').src)
-    document.querySelector('.record').src = record_btn.value
-  } else {
-    document.querySelector('.record').src = capture_btn.value
-  }
+  // if (mode.value === 'video') {
+  //   console.log(document.querySelector('.record').src)
+  //   document.querySelector('.record').src = record_btn.value
+  // } else {
+  //   document.querySelector('.record').src = capture_btn.value
+  // }
 }
 
-function toggleSettingPanel() {
-  const settingPanel = document.querySelector('.setting_panel')
-  if (settingPanel.style.width === '0px') {
-    settingPanel.style.width = '45vw'
-  } else {
-    settingPanel.style.width = '0px'
-  }
-}
+// function toggleSettingPanel() {
+//   const settingPanel = document.querySelector('.setting_panel')
+//   if (settingPanel.style.width === '0px') {
+//     settingPanel.style.width = '45vw'
+//   } else {
+//     settingPanel.style.width = '0px'
+//   }
+// }
 
-const socket = new WebSocket('ws://0.0.0.0:4003')
+// const socket = new WebSocket('ws://0.0.0.0:4003')
 
-socket.onopen = () => {
-  console.log('Connected to the server')
-  socket.send('Hello from the client!')
-}
+// socket.onopen = () => {
+//   console.log('Connected to the server')
+//   socket.send('Hello from the client!')
+// }
 
-socket.onmessage = (event) => {
-  // console.log('Message from the server:', event.data)
-  screen = document.querySelector('.screen')
-  screen.src = `data:image/jpeg;base64,${event.data}`
-}
+// socket.onmessage = (event) => {
+//   // console.log('Message from the server:', event.data)
+//   screen = document.querySelector('.screen')
+//   screen.src = `data:image/jpeg;base64,${event.data}`
+// }
 </script>
 
 <template>
   <img src="../assets/no_signal.jpg" class="screen" />
-  <img src="../assets/icons/Record Button.svg" class="record" />
-  <img src="../assets/icons/Setting Button.svg" class="setting" @click="toggleSettingPanel()" />
+  <RecordButton class="record" />
+  <SettingButton class="setting" @click="this.$refs.sidebarPanel.toggleSidebarPanel()" />
   <div id="mode_selector">
     <div class="select" id="video" @click="changeMode('video')">Video</div>
     <div id="photo" @click="changeMode('photo')">Photo</div>
   </div>
-  <div class="setting_panel">
-    <div class="title">
-      <strong>Setting</strong>
-      <img src="../assets/icons/Close Button.svg" @click="toggleSettingPanel()" />
-    </div>
-    <hr />
-  </div>
+  <SidebarPanel ref="sidebarPanel" title="Setting"></SidebarPanel>
 </template>
 
 <style scoped>
@@ -117,44 +114,5 @@ socket.onmessage = (event) => {
 
 .record:active {
   transform: scale(0.9);
-}
-
-.setting_panel {
-  width: 0;
-  height: 100%;
-  padding: 1rem;
-  background-color: rgba(0, 0, 0, 0.85);
-  position: fixed;
-  right: -2rem;
-  color: white;
-  transition: all 0.5s;
-  z-index: 1;
-}
-
-.setting_panel .title {
-  padding: 0.5rem 1rem;
-  display: grid;
-  grid-template-columns: auto auto;
-}
-
-.setting_panel strong {
-  font-size: 2.5rem;
-}
-
-.setting_panel img {
-  width: 3rem;
-  position: relative;
-  left: 75%;
-  cursor: pointer;
-}
-
-.setting_panel hr {
-  width: 92.5%;
-  height: 3px;
-  position: relative;
-  right: 1.5%;
-  background-color: white;
-  border: 0;
-  margin: 0 auto;
 }
 </style>

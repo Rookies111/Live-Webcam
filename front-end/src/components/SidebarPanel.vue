@@ -1,19 +1,29 @@
-<script setup>
-defineProps(['title'])
+<script>
+import CloseButton from '@/assets/icons/Close Button.vue'
 
-const emit = defineEmits({
-  toggleSidebarPanel: () => {
-    const settingPanelWidth = document.querySelector('.setting_panel').style.width
-    if (settingPanelWidth === '0px') {
-      settingPanelWidth = '45vw'
-    } else {
-      settingPanelWidth = '0px'
+export default {
+  name: 'SidebarPanel',
+  components: {
+    CloseButton
+  },
+  props: {
+    title: {
+      type: String,
+      required: true
+    }
+  },
+
+  methods: {
+    toggleSidebarPanel() {
+      console.log('sidepanel active')
+      const settingPanel = document.querySelector('.setting_panel')
+      if (settingPanel.style.width === '0px') {
+        settingPanel.style.width = '45vw'
+      } else {
+        settingPanel.style.width = '0px'
+      }
     }
   }
-})
-
-function toggle() {
-  emit('toggleSidebarPanel')
 }
 </script>
 
@@ -21,7 +31,7 @@ function toggle() {
   <div class="setting_panel">
     <div class="title">
       <strong>{{ title }}</strong>
-      <img src="../assets/icons/Close Button.svg" @click="toggleSidebarPanel()" />
+      <CloseButton class="close-btn" @click="toggleSidebarPanel()" />
     </div>
     <hr />
     <slot />
@@ -41,24 +51,24 @@ function toggle() {
   z-index: 1;
 }
 
-.setting_panel .title {
+.title {
   padding: 0.5rem 1rem;
   display: grid;
   grid-template-columns: auto auto;
 }
 
-.setting_panel strong {
+strong {
   font-size: 2.5rem;
 }
 
-.setting_panel img {
+.close-btn {
   width: 3rem;
   position: relative;
   left: 75%;
   cursor: pointer;
 }
 
-.setting_panel hr {
+hr {
   width: 92.5%;
   height: 3px;
   position: relative;
