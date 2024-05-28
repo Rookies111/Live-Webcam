@@ -2,30 +2,81 @@
 import { ref } from 'vue'
 import Screen from '@/components/Screen.vue'
 import SidebarPanel from '@/components/SidebarPanel.vue'
-import RecordButton from '@/assets/icons/Record Button.vue'
 import SettingButton from '@/assets/icons/Setting Button.vue'
+import RecordButton from '@/assets/icons/Record Button.vue'
 import CaptureButton from '@/assets/icons/Snapshot Button.vue'
+import StopButton from '@/assets/icons/Stop Button.vue'
+import PauseButton from '@/assets/icons/Pause Button.vue'
+import ResumeButton from '@/assets/icons/Resume Button.vue'
 
 const mode = ref('video')
 
 function changeMode(newMode) {
+  const record_btn = document.querySelector('.record')
+  const capture_btn = document.querySelector('.capture')
+
   document.getElementById(mode.value).classList.remove('select')
   mode.value = newMode
   document.getElementById(mode.value).classList.add('select')
-  // if (mode.value === 'video') {
-  //   console.log(document.querySelector('.record').src)
-  //   document.querySelector('.record').src = record_btn.value
-  // } else {
-  //   document.querySelector('.record').src = capture_btn.value
-  // }
+
+  if (!capture_btn.classList.contains('active') && !record_btn.classList.contains('active')) {
+    return 0
+  }
+
+  if (mode.value === 'video') {
+    record_btn.classList.add('active')
+    capture_btn.classList.remove('active')
+  } else {
+    record_btn.classList.remove('active')
+    capture_btn.classList.add('active')
+  }
+}
+
+function startRecord() {
+  const record_btn = document.querySelector('.record')
+  const stop_btn = document.querySelector('.stop')
+  const pause_btn = document.querySelector('.pause')
+
+  record_btn.classList.remove('active')
+  stop_btn.classList.add('active')
+  pause_btn.classList.add('active')
+}
+
+function stopRecord() {
+  const record_btn = document.querySelector('.record')
+  const stop_btn = document.querySelector('.stop')
+  const pause_btn = document.querySelector('.pause')
+
+  stop_btn.classList.remove('active')
+  pause_btn.classList.remove('active')
+  record_btn.classList.add('active')
+}
+
+function pauseRecord() {
+  const pause_btn = document.querySelector('.pause')
+  const resume_btn = document.querySelector('.resume')
+
+  pause_btn.classList.remove('active')
+  resume_btn.classList.add('active')
+}
+
+function resumeRecord() {
+  const pause_btn = document.querySelector('.pause')
+  const resume_btn = document.querySelector('.resume')
+
+  resume_btn.classList.remove('active')
+  pause_btn.classList.add('active')
 }
 </script>
 
 <template>
   <Screen />
   <div id="camera_control">
-    <CaptureButton class="capture" />
-    <RecordButton class="record" />
+    <RecordButton class="record active" @click="startRecord()" />
+    <CaptureButton class="capture" @click="capturePhoto()" />
+    <StopButton class="stop" @click="stopRecord()" />
+    <PauseButton class="pause" @click="pauseRecord()" />
+    <ResumeButton class="resume" @click="resumeRecord()" />
   </div>
   <SettingButton class="setting" @click="this.$refs.sidebarPanel.toggleSidebarPanel()" />
   <div id="mode_selector">
@@ -36,16 +87,6 @@ function changeMode(newMode) {
 </template>
 
 <style scoped>
-/* .screen {
-  width: 60vw;
-  border-radius: 15px;
-  position: absolute;
-  top: 47.5%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-} */
-
 #mode_selector {
   display: table;
   background-color: #000;
@@ -91,14 +132,21 @@ function changeMode(newMode) {
   left: 50%;
   -ms-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
+  display: table;
 }
 
 #camera_control svg {
+  margin: 0 1rem;
+  display: none;
   cursor: pointer;
   transition: all 0.5s;
 }
 
 #camera_control svg:active {
   transform: scale(0.9);
+}
+
+#camera_control .active {
+  display: table-column;
 }
 </style>
