@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from 'vue'
+import Screen from '@/components/Screen.vue'
+import SidebarPanel from '@/components/SidebarPanel.vue'
 import RecordButton from '@/assets/icons/Record Button.vue'
 import SettingButton from '@/assets/icons/Setting Button.vue'
 import CaptureButton from '@/assets/icons/Snapshot Button.vue'
-import CloseButton from '@/assets/icons/Close Button.vue'
-import SidebarPanel from '@/components/SidebarPanel.vue'
 
 const mode = ref('video')
 
@@ -19,33 +19,14 @@ function changeMode(newMode) {
   //   document.querySelector('.record').src = capture_btn.value
   // }
 }
-
-// function toggleSettingPanel() {
-//   const settingPanel = document.querySelector('.setting_panel')
-//   if (settingPanel.style.width === '0px') {
-//     settingPanel.style.width = '45vw'
-//   } else {
-//     settingPanel.style.width = '0px'
-//   }
-// }
-
-// const socket = new WebSocket('ws://0.0.0.0:4003')
-
-// socket.onopen = () => {
-//   console.log('Connected to the server')
-//   socket.send('Hello from the client!')
-// }
-
-// socket.onmessage = (event) => {
-//   // console.log('Message from the server:', event.data)
-//   screen = document.querySelector('.screen')
-//   screen.src = `data:image/jpeg;base64,${event.data}`
-// }
 </script>
 
 <template>
-  <img src="../assets/no_signal.jpg" class="screen" />
-  <RecordButton class="record" />
+  <Screen />
+  <div id="camera_control">
+    <CaptureButton class="capture" />
+    <RecordButton class="record" />
+  </div>
   <SettingButton class="setting" @click="this.$refs.sidebarPanel.toggleSidebarPanel()" />
   <div id="mode_selector">
     <div class="select" id="video" @click="changeMode('video')">Video</div>
@@ -55,7 +36,7 @@ function changeMode(newMode) {
 </template>
 
 <style scoped>
-.screen {
+/* .screen {
   width: 60vw;
   border-radius: 15px;
   position: absolute;
@@ -63,7 +44,7 @@ function changeMode(newMode) {
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-}
+} */
 
 #mode_selector {
   display: table;
@@ -104,15 +85,20 @@ function changeMode(newMode) {
   transform: rotate(90deg) scale(0.9);
 }
 
-.record {
+#camera_control {
   position: absolute;
-  bottom: 3%;
-  left: 47%;
+  bottom: 2.5%;
+  left: 50%;
+  -ms-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+}
+
+#camera_control svg {
   cursor: pointer;
   transition: all 0.5s;
 }
 
-.record:active {
+#camera_control svg:active {
   transform: scale(0.9);
 }
 </style>
