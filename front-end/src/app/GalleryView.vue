@@ -2,6 +2,7 @@
 import Searchbar from '@/components/Searchbar.vue'
 import DropdownMenu from '@/components/DropdownMenu.vue'
 import SidebarPanel from '@/components/SidebarPanel.vue'
+import { proxyRefs } from 'vue'
 
 function toggleOrder() {
   const order_btn = document.querySelector('.order')
@@ -14,11 +15,13 @@ function toggleOrder() {
 </script>
 
 <template>
-  <SidebarPanel ref="sidebarPanel" title="Filter"> </SidebarPanel>
+  <SidebarPanel title="Filter"> </SidebarPanel>
   <div class="querybar">
     <Searchbar />
     <button class="order" @click="toggleOrder()">▼</button>
-    <button class="filter" @click="this.$refs.sidebarPanel.toggleSidebarPanel()">Filter</button>
+    <button class="filter" @click="proxyRefs(SidebarPanel).methods.toggleSidebarPanel()">
+      Filter
+    </button>
     <DropdownMenu title="Sort By" content="test,test,test,test" />
   </div>
 </template>

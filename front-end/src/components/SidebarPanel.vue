@@ -16,12 +16,12 @@ export default {
 
   methods: {
     toggleSidebarPanel() {
-      console.log('sidepanel active')
-      const settingPanel = document.querySelector('.setting_panel')
-      if (settingPanel.style.width === '0px') {
-        settingPanel.style.width = '45vw'
-      } else {
+      const settingPanel = document.querySelector('.sidebar_panel')
+      console.log(`sidepanel active ${settingPanel.style.width}`)
+      if (settingPanel.style.width === '45vw') {
         settingPanel.style.width = '0px'
+      } else {
+        settingPanel.style.width = '45vw'
       }
     }
   }
@@ -29,7 +29,7 @@ export default {
 </script>
 
 <template>
-  <div class="setting_panel">
+  <div class="sidebar_panel">
     <div class="title">
       <strong>{{ title }}</strong>
       <CloseButton class="close-btn" @click="toggleSidebarPanel()" />
@@ -40,8 +40,8 @@ export default {
 </template>
 
 <style scoped>
-.setting_panel {
-  width: 0;
+.sidebar_panel {
+  width: 0px;
   height: 100%;
   padding: 1rem;
   background-color: rgba(0, 0, 0, 0.85);

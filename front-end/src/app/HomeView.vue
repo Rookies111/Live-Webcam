@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { proxyRefs, ref } from 'vue'
 import Screen from '@/components/Screen.vue'
 import SidebarPanel from '@/components/SidebarPanel.vue'
 import SettingButton from '@/assets/icons/Setting Button.vue'
@@ -78,12 +78,12 @@ function resumeRecord() {
     <PauseButton class="pause" @click="pauseRecord()" />
     <ResumeButton class="resume" @click="resumeRecord()" />
   </div>
-  <SettingButton class="setting" @click="this.$refs.sidebarPanel.toggleSidebarPanel()" />
+  <SettingButton class="setting" @click="proxyRefs(SidebarPanel).methods.toggleSidebarPanel()" />
   <div id="mode_selector">
     <div class="select" id="video" @click="changeMode('video')">Video</div>
     <div id="photo" @click="changeMode('photo')">Photo</div>
   </div>
-  <SidebarPanel ref="sidebarPanel" title="Setting"></SidebarPanel>
+  <SidebarPanel title="Setting"></SidebarPanel>
 </template>
 
 <style scoped>
@@ -122,8 +122,12 @@ function resumeRecord() {
   cursor: pointer;
 }
 
+.setting:hover {
+  transform: rotate(90deg);
+}
+
 .setting:active {
-  transform: rotate(90deg) scale(0.9);
+  transform: scale(0.9);
 }
 
 #camera_control {

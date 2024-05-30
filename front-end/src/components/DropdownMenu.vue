@@ -14,35 +14,38 @@ export default {
   },
 
   mounted() {
-    const dropdown_btn = document.querySelector('.dropdown')
-    dropdown_btn.addEventListener('click', () => {
-      const dropdown = document.createElement('div')
-      dropdown.classList.add('dropdown-content')
-      this.content.split(',').forEach((item) => {
-        const option = document.createElement('button')
-        option.textContent = item
-        option.classList.add('dropdown-option')
-        dropdown.appendChild(option)
-      })
-      dropdown_btn.appendChild(dropdown)
+    const dropdown_content = document.querySelector('.dropdown-content')
+    this.content.split(',').forEach((item) => {
+      const option = document.createElement('button')
+      option.textContent = item
+      option.classList.add('dropdown-option')
     })
+    dropdown_content.appendChild(option)
   }
 }
 </script>
 
 <template>
-  <button class="dropdown">
-    {{ title }} <img src="../assets/dropdown_arrow.png" width="15px" height="15px" />
-  </button>
+  <div class="dropdown">
+    <button class="dropdown-btn">
+      {{ title }} <img src="../assets/dropdown_arrow.png" width="15px" height="15px" />
+    </button>
+    <div class="dropdown-content"></div>
+  </div>
 </template>
 
 <style scoped>
-.dropdown {
+.dropdown-btn {
   background-color: #fff;
   color: #000;
   border: 2px solid #000;
   border-radius: 15px;
   font-weight: bold;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
 }
 
 .dropdown-content {
@@ -58,6 +61,10 @@ export default {
   color: #000;
   padding: 12px 16px;
   text-decoration: none;
+  display: block;
+}
+
+.dropdown:hover .dropdown-content {
   display: block;
 }
 </style>
