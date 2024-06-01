@@ -132,7 +132,7 @@ function resumeRecord() {
 
 #camera_control {
   position: absolute;
-  bottom: 2.5%;
+  bottom: 2%;
   left: 50%;
   -ms-transform: translate(-50%, 0);
   transform: translate(-50%, 0);

@@ -49,7 +49,7 @@ export default {
   right: -2rem;
   color: white;
   transition: all 0.5s;
-  z-index: 1;
+  z-index: 10;
 }
 
 .title {
