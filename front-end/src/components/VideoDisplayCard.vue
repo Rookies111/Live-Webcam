@@ -22,6 +22,7 @@ export default {
 <style scoped>
 .video-display-card {
   width: 100%;
+  cursor: pointer;
 }
 
 img {
